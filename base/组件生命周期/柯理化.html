@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="../js/react.development.js"></script> <!--React-->
+    <script src="../js/react-dom.development.js"></script> <!-- ReactDom-->
+    <script src="../js/babel.min.js"></script>
+    <script src="../js/prop-types.js"></script> <!--  PropTypes -->
+
+    <script type="text/babel">
+        class Demo extends React.Component {
+            state = {
+                username: ''
+            };
+            // 柯理化
+            // showData = (type) => {
+            //     return (e) => {
+            //         this.setState({ [type]: e.target.value });
+            //     };
+            // };
+            // <input onChange={this.showData('username')} type="text" placeholder="点击按钮提示数据" /> {/*函数形式*/}
+            // 不柯理化
+            showData = (type, e) => {
+                this.setState({ [type]: e.target.value });
+            };
+            handleSubmit = (e) => {
+                e.preventDefault();
+                let { username } = this.state;
+                console.log(username);
+            };
+            render() {
+                return (
+                    <form onSubmit={this.handleSubmit}>
+                        <input onChange={e=>this.showData('username',e)} type="text" placeholder="点击按钮提示数据" /> {/*函数形式*/}
+                        <button> 点击提示左侧数据</button>
+                    </form>
+                );
+            }
+        }
+        ReactDOM.render(<Demo />, document.querySelector("#app")); 
+    </script>
+</body>
+
+</html>

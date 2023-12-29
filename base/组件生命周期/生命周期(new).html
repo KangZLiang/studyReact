@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="../newjs/react.development.js"></script> <!--React-->
+    <script src="../newjs/react-dom.development.js"></script> <!-- ReactDom-->
+    <script src="../newjs/babel.min.js"></script>
+    <script src="../newjs/prop-types.js"></script> <!--  PropTypes -->
+
+    <script type="text/babel">
+        class Demo extends React.Component {
+
+            constructor(props) {
+                super(props);
+                this.state = { count: 0, cat: 'AA' };
+            }
+
+            addCount = () => {
+                const { count } = this.state;
+                this.setState({ count: count + 1 });
+            };
+            force = () => {
+                this.forceUpdate();
+            };
+
+            updateCat = () => {
+                this.setState({ cat: 'BB' });
+            };
+            // UNSAFE_componentWillMount() { // 挂载前
+            //     console.log('UNSAFE_componentWillMount');
+            // }
+            componentDidMount() { // 挂载后
+                console.log('componentDidMount');
+            }
+
+            componentWillUnmount() { //卸载前
+                console.log('componentWillUnmount');
+            }
+            static getDerivedStateFromProps(props,state) {
+                console.log('getDerivedStateFromProps',props,state);
+                return null
+            }
+
+            getSnapshotBeforeUpdate() {
+                console.log('getSnapshotBeforeUpdate');
+                return 'null'
+            }
+
+            shouldComponentUpdate() { // 控制组件是否更新（不写默认返回true）如：setState
+                console.log('shouldComponentUpdate');
+                return true;
+            }
+
+            // UNSAFE_componentWillUpdate() { //修改前   强制更新
+            //     console.log('UNSAFE_componentWillUpdate');
+            // }
+
+            componentDidUpdate(preProps,preState,snapshotValue) { // 修改后
+                console.log('componentDidUpdate',preProps,preState,snapshotValue);
+            }
+
+            render() {
+                const { count, cat } = this.state;
+                return (
+                    <div>
+                        <h2>数字： {count}</h2>
+                        <button onClick={this.addCount}>点击</button>
+                        <button onClick={this.force}>强制更新</button>
+                        <button onClick={this.updateCat}>修改</button>
+                        <A cat={cat} />
+                    </div>
+                );
+            }
+        }
+
+        class A extends React.Component {
+            // UNSAFE_componentWillReceiveProps(props) { // 组件将要接受数据 ，父组件第一次render不触发  props为传参
+            //     console.log('UNSAFE_componentWillReceiveProps');
+            // }
+            render() {
+                return (
+                    <div>
+                        <h1>{this.props.cat}</h1>
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(<Demo a={123}/>, document.querySelector("#app"))
+    </script>
+</body>
+
+</html>
+
+<!-- 一、父子组件初始化
+父子组件第一次进行渲染加载时：
+
+控制台的打印顺序为：
+
+Parent 组件： constructor()
+Parent 组件： getDerivedStateFromProps()
+Parent 组件： render()
+Child 组件： constructor()
+Child 组件： getDerivedStateFromProps()
+Child 组件： render()
+Child 组件： componentDidMount()
+Parent 组件： componentDidMount()
+二、子组件修改自身状态 state
+点击子组件 [改变自身状态counter] 按钮，其 [自身状态counter] 值会 +1, 此时控制台的打印顺序为：
+
+Child 组件： getDerivedStateFromProps()
+Child 组件： shouldComponentUpdate()
+Child 组件： render()
+Child 组件： getSnapshotBeforeUpdate()
+Child 组件： componentDidUpdate()
+三、修改父组件中传入子组件的 props
+点击父组件中的 [改变传给子组件的属性 count] 按钮，则界面上 [父组件传过来的属性 count] 的值会 + 1，控制台的打印顺序为：
+
+Parent 组件： getDerivedStateFromProps()
+Parent 组件： shouldComponentUpdate()
+Parent 组件： render()
+Child 组件： getDerivedStateFromProps()
+Child 组件： shouldComponentUpdate()
+Child 组件： render()
+Child 组件： getSnapshotBeforeUpdate()
+Parent 组件： getSnapshotBeforeUpdate()
+Child 组件： componentDidUpdate()
+Parent 组件： componentDidUpdate()
+四、卸载子组件
+点击父组件中的 [卸载 / 挂载子组件] 按钮，则界面上子组件会消失，控制台的打印顺序为：
+
+Parent 组件： getDerivedStateFromProps()
+Parent 组件： shouldComponentUpdate()
+Parent 组件： render()
+Parent 组件： getSnapshotBeforeUpdate()
+Child 组件： componentWillUnmount()
+Parent 组件： componentDidUpdate()
+五、重新挂载子组件
+再次点击父组件中的 [卸载 / 挂载子组件] 按钮，则界面上子组件会重新渲染出来，控制台的打印顺序为：
+
+Parent 组件： getDerivedStateFromProps()
+Parent 组件： shouldComponentUpdate()
+Parent 组件： render()
+Child 组件： constructor()
+Child 组件： getDerivedStateFromProps()
+Child 组件： render()
+Parent 组件： getSnapshotBeforeUpdate()
+Child 组件： componentDidMount()
+Parent 组件： componentDidUpdate() -->
